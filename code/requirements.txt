@@ -1,0 +1,38 @@
+# ─────────────────────────────────────────────────────────────────────────────
+# requirements.txt — Multi-Modal Fraud Triage Engine
+#
+# Pinned to compatible ranges rather than hard versions so pip can resolve on
+# any Python 3.10+ environment without conflicts.
+#
+# Installation:
+#   pip install -r requirements.txt
+# ─────────────────────────────────────────────────────────────────────────────
+
+# ── LLM / VLM Inference ───────────────────────────────────────────────────────
+groq                  # Official Groq SDK — ultra-fast Llama 3.3 inference on LPUs
+openai                # OpenAI-compatible client used for Nvidia NIM endpoints
+
+# ── Structured Output Enforcement ─────────────────────────────────────────────
+instructor            # Forces LLM responses to validate against Pydantic schemas
+pydantic              # Data validation and settings management
+pydantic-settings     # Pydantic Settings for loading .env config cleanly
+
+# ── Async Retry / Rate-Limit Handling ─────────────────────────────────────────
+tenacity              # Exponential-backoff retry decorators for free-tier APIs
+
+# ── Data I/O ──────────────────────────────────────────────────────────────────
+pandas                # CSV ingestion, merging, and output writing
+python-dotenv         # Loads .env files into os.environ at startup
+
+# ── Image Processing ──────────────────────────────────────────────────────────
+pillow                # Core image resizing, EXIF transpose, JPEG encoding
+imagehash             # Perceptual hashing (phash) for duplicate image detection
+
+# ── Local Security Modules (CPU-only — zero API cost) ─────────────────────────
+exifread              # Reads raw EXIF metadata from JPEG/TIFF without Pillow
+easyocr               # OCR engine for detecting visual prompt injections in images
+                      # First run downloads ~300 MB of model weights to ~/.EasyOCR/
+
+# ── Object Detection (PII Blurring — optional, comment out if time-constrained)
+# ultralytics         # YOLOv8 for detecting and blurring faces/license plates
+                      # ~200 MB download; comment out if not using pii_redactor.py
