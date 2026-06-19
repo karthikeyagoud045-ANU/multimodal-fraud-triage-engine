@@ -154,7 +154,7 @@ class Settings(BaseSettings):
             )
         return self
 
-    def groq_api_key_list(self) -> List[str]:
+    def groq_api_key_list(self) -> list[str]:
         """Return the list of Groq API keys."""
         val = self.groq_api_keys.get_secret_value()
         if val == "dummy_groq_key":

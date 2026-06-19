@@ -194,10 +194,14 @@ async def _generate_with_groq(
     # to use response_format={"type": "json_object"} cleanly.
     from openai import AsyncOpenAI
     from tenacity import RetryError  # noqa — for clarity
+    import random
+
+    keys = settings.groq_api_key_list()
+    api_key = random.choice(keys) if keys else "dummy_groq_key"
 
     # Create a minimal raw Groq client via the OpenAI SDK (not instructor-wrapped)
     raw_client = AsyncOpenAI(
-        api_key=settings.groq_api_key_str(),
+        api_key=api_key,
         base_url="https://api.groq.com/openai/v1",
         max_retries=0,  # tenacity owns retries
         timeout=20.0,
