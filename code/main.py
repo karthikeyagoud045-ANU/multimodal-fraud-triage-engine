@@ -44,7 +44,7 @@ from typing import Dict, List, Optional
 from dotenv import load_dotenv
 
 from agents.scribe import write_justification
-from agents.text_extractor import extract_claim_intent, _heuristic_extract
+from agents.text_extractor import extract_claim_intent
 from agents.vlm_inspector import inspect_images, fallback_inspect_images
 from config import settings
 from logic.risk_assessor import assess_risk_from_context
@@ -223,7 +223,12 @@ async def _run_claim_steps(
             claim_object=context.claim_object.value,
         )
     else:
-        text_output = _heuristic_extract(context.user_claim, context.claim_object)
+        from models import TextExtractorOutput
+        text_output = TextExtractorOutput(
+            claimed_parts=["unknown"],
+            claimed_issues=["unknown"],
+            text_injection_detected=False
+        )
     timer.log_model_call(
         provider="groq",
         function_name="extract_claim_intent",

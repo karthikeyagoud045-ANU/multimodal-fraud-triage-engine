@@ -32,7 +32,7 @@ from __future__ import annotations
 
 import argparse
 import json
-from datetime import datetime
+from datetime import datetime, timezone
 from pathlib import Path
 from typing import Dict, List, Optional, Tuple
 
@@ -205,7 +205,7 @@ def generate_report(
         The full report as a string.
     """
     rows = int(metrics.get("rows_compared", 0))
-    now  = datetime.utcnow().strftime("%Y-%m-%d %H:%M UTC")
+    now  = datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M UTC")
 
     def pct(key: str) -> str:
         v = metrics.get(key)
@@ -499,7 +499,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument(
         "--pred",
         type=Path,
-        default=DATA_ROOT / "sample_output.csv",
+        default=DATA_ROOT / "output_test.csv",
         help="Prediction CSV (output of main.py).",
     )
     parser.add_argument(

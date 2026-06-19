@@ -1,6 +1,6 @@
 # Evaluation Report — Multi-Modal Fraud Triage Engine
 
-> **Generated:** 2026-06-19 09:07 UTC  |  **Compared:** `output.csv` vs `sample_claims.csv`  |  **Rows:** 17
+> **Generated:** 2026-06-19 17:45 UTC  |  **Compared:** `output_test.csv` vs `sample_claims.csv`  |  **Rows:** 20
 
 ---
 
@@ -10,27 +10,27 @@
 
 | Field | Exact Match | Set Overlap |
 |---|---|---|
-| `claim_status` | **29.4%** | 29.4% |
-| `issue_type`   | **23.5%** | 26.5% |
-| `object_part`  | **23.5%** | 33.8% |
+| `claim_status` | **20.0%** | 20.0% |
+| `issue_type`   | **55.0%** | 62.5% |
+| `object_part`  | **65.0%** | 81.7% |
 
 ### Composite
 
-- **Row exact match (all primary columns):** 0.0%
+- **Row exact match (all primary columns):** 5.0%
 
 ### Secondary Metrics
 
 | Field | Exact Match |
 |---|---|
 | `valid_image` | 0.0% |
-| `severity`    | 11.8% |
+| `severity`    | 15.0% |
 | `evidence_standard_met` | 0.0% |
 
 ### Claim Status Breakdown
 
 | Status | Recall |
 |---|---|
-| `contradicted` | 83.3% |
+| `contradicted` | 100.0% |
 | `not_enough_information` | 0.0% |
 | `supported` | 0.0% |
 
@@ -39,9 +39,9 @@
 ```
 Predicted →       contradicted            not_enough_information  supported             
 ────────────────────────────────────────────────────────────────────────────────────────
-Actual contradicted                         5                       1                       0
-Actual not_enough_information                     2                       0                       0
-Actual supported                            8                       1                       0
+Actual contradicted                         4                       0                       0
+Actual not_enough_information                     3                       0                       0
+Actual supported                           13                       0                       0
 ```
 
 ---
@@ -50,21 +50,21 @@ Actual supported                            8                       1           
 
 | Metric | Value |
 |---|---|
-| Total processing time | `194.867s` |
-| Avg time per claim | `4.429s` |
+| Total processing time | `58.262s` |
+| Avg time per claim | `2.913s` |
 | Concurrency level | `3` |
 | AI agents enabled | `True` |
 | Security pre-flight | `True` |
-| P90 latency | `174628.6ms` |
-| Max latency | `194864.2ms` |
+| P90 latency | `49877.2ms` |
+| Max latency | `58260.6ms` |
 
 ### Model Call Statistics
 
 | Provider | Model | Calls | Est. Tokens |
 |---|---|---|---|
-| Groq | Llama-3.3-70B + 8B | 88 | 23,742 |
-| Nvidia NIM | Llama-3.2-90B Vision | 44 | 142,800 |
-| — | **Total** | — | **166,542** |
+| Groq | Llama-3.3-70B + 8B | 40 | 11,130 |
+| Nvidia NIM | Llama-3.2-90B Vision | 20 | 52,500 |
+| — | **Total** | — | **63,630** |
 
 ### Cost Analysis
 
@@ -72,7 +72,7 @@ Actual supported                            8                       1           
 >
 > Both Groq and Nvidia NIM are used at their free tier for this submission.
 > Equivalent OpenAI GPT-4o cost at `$0.005/1K tokens` would be approximately
-> `$0.83` — representing **100% savings**.
+> `$0.32` — representing **100% savings**.
 
 ### Security Pre-Flight
 
