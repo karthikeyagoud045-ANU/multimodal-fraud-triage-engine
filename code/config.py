@@ -50,10 +50,10 @@ class Settings(BaseSettings):
 
     # ── Required: API Keys ────────────────────────────────────────────────────
     # SecretStr prevents accidental logging of the key value.
-    # Access with: settings.groq_api_key.get_secret_value()
-    groq_api_key: SecretStr = Field(
+    # Access with: settings.groq_api_keys.get_secret_value()
+    groq_api_keys: SecretStr = Field(
         default=SecretStr("dummy_groq_key"),
-        description="Groq API key. Required. Get one at https://console.groq.com/keys",
+        description="Groq API keys, comma separated. Required. Get one at https://console.groq.com/keys",
     )
     nvidia_api_key: SecretStr = Field(
         default=SecretStr("dummy_nvidia_key"),
@@ -154,9 +154,12 @@ class Settings(BaseSettings):
             )
         return self
 
-    def groq_api_key_str(self) -> str:
-        """Convenience method to get the raw Groq API key string."""
-        return self.groq_api_key.get_secret_value()
+    def groq_api_key_list(self) -> List[str]:
+        """Return the list of Groq API keys."""
+        val = self.groq_api_keys.get_secret_value()
+        if val == "dummy_groq_key":
+            return []
+        return [k.strip() for k in val.split(",") if k.strip()]
 
     def nvidia_api_key_str(self) -> str:
         """Convenience method to get the raw Nvidia API key string."""

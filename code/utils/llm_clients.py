@@ -43,28 +43,42 @@ from config import settings
 # Groq Client — Text Agents (text_extractor.py, scribe.py)
 # ─────────────────────────────────────────────────────────────────────────────
 
+import itertools
+
 # The Groq endpoint is OpenAI API-compatible at a different base_url.
 # Models available: llama-3.3-70b-versatile, llama-3.1-8b-instant, etc.
 # Rate limits (free tier): 12,000 TPM / 30 RPM for 70B model.
-_groq_async_client = AsyncOpenAI(
-    api_key=settings.groq_api_key_str(),
-    base_url="https://api.groq.com/openai/v1",
-    # Generous timeout — Groq is fast but may queue during peak hours.
-    # This prevents the pipeline from hanging indefinitely on a stalled request.
-    timeout=30.0,
-    max_retries=0,  # CRITICAL: tenacity owns retries; disable openai-SDK auto-retry
-                    # so 429 errors surface immediately to the tenacity @retry decorator.
-)
+_groq_api_keys = settings.groq_api_key_list()
+if not _groq_api_keys:
+    _groq_api_keys = ["dummy_groq_key"]
 
-groq_instructor_client = instructor.from_openai(
-    _groq_async_client,
-    # Mode.JSON forces the model to output valid JSON in its response body.
-    # This is the most reliable mode for Llama models which lack native
-    # function-calling capability as robust as GPT-4.
-    mode=instructor.Mode.JSON,
-)
+_groq_async_clients = [
+    AsyncOpenAI(
+        api_key=key,
+        base_url="https://api.groq.com/openai/v1",
+        timeout=30.0,
+        max_retries=0,
+    ) for key in _groq_api_keys
+]
+
+_groq_instructor_clients = [
+    instructor.from_openai(client, mode=instructor.Mode.JSON)
+    for client in _groq_async_clients
+]
+
+class RoundRobinInstructor:
+    def __init__(self, clients):
+        self.clients = clients
+        self._cycle = itertools.cycle(clients)
+
+    @property
+    def chat(self):
+        return next(self._cycle).chat
+
+groq_instructor_client = RoundRobinInstructor(_groq_instructor_clients)
 """Instructor-patched Groq async client.
 
+Uses round-robin across multiple API keys to distribute load and mitigate rate limits.
 Use this for all text-based LLM calls (text_extractor.py, scribe.py).
 
 Example:
@@ -75,7 +89,7 @@ Example:
         model=settings.groq_model,
         response_model=TextExtractorOutput,
         messages=[...],
-        max_retries=2,  # instructor-level schema repair retries (not rate-limit retries)
+        max_retries=2,
     )
 """
 
@@ -136,7 +150,7 @@ async def ping_groq() -> bool:
     """
     try:
         # List models is a cheap GET request with no token cost
-        await _groq_async_client.models.list()
+        await _groq_async_clients[0].models.list()
         return True
     except Exception:
         return False
