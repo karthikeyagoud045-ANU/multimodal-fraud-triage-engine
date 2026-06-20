@@ -1,0 +1,47 @@
+{
+  "run": {
+    "claims_processed": 20,
+    "elapsed_seconds": 0.003,
+    "avg_seconds_per_claim": 0.0,
+    "concurrency": 3,
+    "used_ai": false,
+    "used_security": false,
+    "claims_csv": "/Users/karthikeya/Desktop/hackerrank-june 19/orchestrator/dataset/sample_claims.csv",
+    "output_csv": "/Users/karthikeya/Desktop/hackerrank-june 19/orchestrator/dataset/sample_output_dryrun.csv"
+  },
+  "token_estimates": {
+    "groq_text_tokens": 11130,
+    "nvidia_vision_tokens": 52500,
+    "total_estimated": 63630,
+    "estimated_cost_usd": 0.0,
+    "cost_note": "Groq free tier: unlimited tokens (rate-limited). Nvidia NIM: 1000 API credits (free tier). Zero commercial cost for this submission."
+  },
+  "telemetry": {
+    "total_claims": 20,
+    "latency": {
+      "avg_ms": 0.1,
+      "min_ms": 0.1,
+      "max_ms": 0.4,
+      "p90_ms": 0.2
+    },
+    "claim_status_distribution": {
+      "not_enough_information": 20
+    },
+    "model_calls": {
+      "groq_total": 40,
+      "nvidia_total": 20,
+      "failed_total": 0,
+      "groq_tokens_est": 11130,
+      "nvidia_tokens_est": 52500
+    },
+    "security": {
+      "flags_raised": 0,
+      "flag_frequency": {},
+      "vlm_skipped_count": 0
+    },
+    "errors": {
+      "count": 0,
+      "samples": []
+    }
+  }
+}
